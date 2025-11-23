@@ -1,0 +1,13 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS",
+    "buildCommand": "g++ src/main.cpp src/linked_list.cpp src/data_structures.cpp -std=c++17 -I./external/Crow/include -I./external/asio/include -o dsa_visualizer -pthread -DASIO_STANDALONE"
+  },
+  "deploy": {
+    "startCommand": "./dsa_visualizer",
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+  }
+}
+

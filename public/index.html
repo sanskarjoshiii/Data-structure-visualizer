@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Structure Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .selection-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .selection-section h2 {
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .ds-buttons, .type-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .ds-btn, .type-btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px 25px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .ds-btn {
+            background: #667eea;
+            color: white;
+        }
+
+        .ds-btn:hover, .ds-btn.active {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .ds-btn.active {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .type-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .type-btn:hover, .type-btn.active {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .type-btn.active {
+            transform: scale(1.05);
+        }
+
+        .operations-section {
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        .operations-section.active {
+            display: block;
+        }
+
+        .operations-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .operation-group {
+            margin-bottom: 25px;
+        }
+
+        .operation-group h3 {
+            color: #555;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .operation-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .operation-btn {
+            padding: 12px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #667eea;
+            color: white;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .operation-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .input-group input {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-group button {
+            padding: 12px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .input-group button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .display-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .display-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .display-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .ds-display {
+            min-height: 100px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .node, .array-item, .stack-item, .queue-item {
+            display: flex;
+            align-items: center;
+            background: #667eea;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1em;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .arrow {
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .empty-list {
+            color: #999;
+            font-style: italic;
+            font-size: 1.1em;
+        }
+
+        .priority-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #667eea;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1em;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .priority-value {
+            font-size: 1.2em;
+        }
+
+        .priority-priority {
+            font-size: 0.8em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Data Structure Visualizer</h1>
+
+        <!-- Data Structure Selection -->
+        <div class="selection-section">
+            <h2>Step 1: Select Data Structure</h2>
+            <div class="ds-buttons">
+                <button class="ds-btn" onclick="selectDS('array')">📋 Arrays</button>
+                <button class="ds-btn" onclick="selectDS('linkedlist')">🔗 Linked Lists</button>
+                <button class="ds-btn" onclick="selectDS('stack')">📚 Stacks</button>
+                <button class="ds-btn" onclick="selectDS('queue')">🚶 Queues</button>
+            </div>
+        </div>
+
+        <!-- Type Selection (for Linked Lists, Stacks, Queues) -->
+        <div id="type-selection" class="selection-section" style="display: none;">
+            <h2>Step 2: Select Type</h2>
+            <div class="type-buttons" id="type-buttons"></div>
+        </div>
+
+        <!-- Operations Sections -->
+        <div id="operations-container"></div>
+
+        <!-- Display Section -->
+        <div class="display-section">
+            <button class="display-btn" onclick="displayDS()">Display Data Structure</button>
+            <div id="message" class="message"></div>
+            <div id="ds-display" class="ds-display">
+                <div class="empty-list">Select a data structure and perform operations to see it here</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:18080';
+        let currentDS = null;
+        let currentType = null;
+
+        function selectDS(ds) {
+            currentDS = ds;
+            currentType = null;
+            
+            // Update active button
+            document.querySelectorAll('.ds-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Show type selection if needed
+            const typeSelection = document.getElementById('type-selection');
+            const typeButtons = document.getElementById('type-buttons');
+            typeButtons.innerHTML = '';
+            
+            if (ds === 'array') {
+                typeSelection.style.display = 'none';
+                showOperations('array', null);
+            } else if (ds === 'linkedlist') {
+                typeSelection.style.display = 'block';
+                typeButtons.innerHTML = `
+                    <button class="type-btn" onclick="selectType('singly')">Singly Linked List</button>
+                    <button class="type-btn" onclick="selectType('doubly')">Doubly Linked List</button>
+                    <button class="type-btn" onclick="selectType('circular')">Circular Linked List</button>
+                `;
+            } else if (ds === 'stack') {
+                typeSelection.style.display = 'block';
+                typeButtons.innerHTML = `
+                    <button class="type-btn" onclick="selectType('array')">Stack (Array)</button>
+                    <button class="type-btn" onclick="selectType('linkedlist')">Stack (Linked List)</button>
+                `;
+            } else if (ds === 'queue') {
+                typeSelection.style.display = 'block';
+                typeButtons.innerHTML = `
+                    <button class="type-btn" onclick="selectType('normal')">Normal Queue</button>
+                    <button class="type-btn" onclick="selectType('circular')">Circular Queue</button>
+                    <button class="type-btn" onclick="selectType('deque')">Double-Ended Queue</button>
+                    <button class="type-btn" onclick="selectType('priority')">Priority Queue</button>
+                `;
+            }
+            
+            clearDisplay();
+        }
+
+        function selectType(type) {
+            currentType = type;
+            
+            // Update active button
+            document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            showOperations(currentDS, type);
+        }
+
+        function showOperations(ds, type) {
+            const container = document.getElementById('operations-container');
+            container.innerHTML = '';
+            
+            if (ds === 'array') {
+                container.innerHTML = getArrayOperations();
+            } else if (ds === 'linkedlist') {
+                if (type === 'singly') container.innerHTML = getSinglyLLOperations();
+                else if (type === 'doubly') container.innerHTML = getDoublyLLOperations();
+                else if (type === 'circular') container.innerHTML = getCircularLLOperations();
+            } else if (ds === 'stack') {
+                if (type === 'array') container.innerHTML = getStackArrayOperations();
+                else if (type === 'linkedlist') container.innerHTML = getStackLLOperations();
+            } else if (ds === 'queue') {
+                if (type === 'normal') container.innerHTML = getQueueOperations();
+                else if (type === 'circular') container.innerHTML = getCircularQueueOperations();
+                else if (type === 'deque') container.innerHTML = getDequeOperations();
+                else if (type === 'priority') container.innerHTML = getPriorityQueueOperations();
+            }
+        }
+
+        // Operation HTML Generators
+        function getArrayOperations() {
+            return `
+                <div class="operations-section active">
+                    <h2>Array Operations</h2>
+                    <div class="operation-group">
+                        <h3>Insert Operation</h3>
+                        <div class="input-group">
+                            <input type="number" id="array-insert-value" placeholder="Value">
+                            <input type="number" id="array-insert-position" placeholder="Position">
+                            <button onclick="arrayInsert()">Insert</button>
+                        </div>
+                    </div>
+                    <div class="operation-group">
+                        <h3>Delete Operations</h3>
+                        <div class="input-group">
+                            <input type="number" id="array-delete-position" placeholder="Position">
+                            <button onclick="arrayDeletePosition()">Delete at Position</button>
+                        </div>
+                        <div class="input-group">
+                            <input type="number" id="array-delete-value" placeholder="Value">
+                            <button onclick="arrayDeleteValue()">Delete by Value</button>
+                        </div>
+                    </div>
+                    <div class="operation-group">
+                        <h3>Search Operations</h3>
+                        <div class="input-group">
+                            <input type="number" id="array-search-value" placeholder="Value">
+                            <button onclick="arrayLinearSearch()">Linear Search</button>
+                            <button onclick="arrayBinarySearch()">Binary Search</button>
+                        </div>
+                    </div>
+                    <div class="operation-group">
+                        <h3>Other Operations</h3>
+                        <div class="input-group">
+                            <input type="number" id="array-update-position" placeholder="Position">
+                            <input type="number" id="array-update-value" placeholder="New Value">
+                            <button onclick="arrayUpdate()">Update</button>
+                        </div>
+                        <div class="operation-buttons">
+                            <button class="operation-btn" onclick="arrayTraverse()">Traverse</button>
+                            <button class="operation-btn" onclick="arrayClear()">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getSinglyLLOperations() {
+            return `
+                <div class="operations-section active">
+                    <h2>Singly Linked List Operations</h2>
+                    <div class="operation-group">
+                        <h3>Insert Operations</h3>
+                        <div class="input-group">
+                            <input type="number" id="singly-insert-value" placeholder="Value">
+                            <button onclick="llInsert('singly', 'beginning')">Insert at Beginning</button>
+                            <button onclick="llInsert('singly', 'end')">Insert at End</button>
+                        </div>
+                        <div class="input-group">
+                            <input type="number" id="singly-insert-position-value" placeholder="Value">
+                            <input type="number" id="singly-insert-position" placeholder="Position">
+                            <button onclick="llInsert('singly', 'position')">Insert at Position</button>
+                        </div>
+                    </div>
+                    <div class="operation-group">
+                        <h3>Delete Operations</h3>
+                        <div class="operation-buttons">
+                            <button class="operation-btn" onclick="llDelete('singly', 'beginning')">Delete at Beginning</button>
+                            <button class="operation-btn" onclick="llDelete('singly', 'end')">Delete at End</button>
+                        </div>
+                        <div class="input-group">
+                            <input type="number" id="singly-delete-position" placeholder="Position">
+                            <button onclick="llDelete('singly', 'position')">Delete at Position</button>
+                        </div>
+                        <div class="input-group">
+                            <input type="number" id="singly-delete-value" placeholder="Value">
+                            <button onclick="llDelete('singly', 'value')">Delete by Value</button>
+                        </div>
+                    </div>
+                    <div class="operation-group">
+                        <h3>Other Operations</h3>
+                        <div class="input-group">
+                            <input type="number" id="singly-old-value" placeholder="Old value">
+                            <input type="number" id="singly-new-value" placeholder="New value">
+                            <button onclick="llUpdate('singly')">Update</button>
+                        </div>
+                        <div class="input-group">
+                            <input type="number" id="singly-search-value" placeholder="Value">
+                            <button onclick="llSearch('singly')">Search</button>
+                        </div>
+                        <div class="operation-buttons">
+                            <button class="operation-btn" onclick="llReverse('singly')">Reverse</button>
+                            <button class="operation-btn" onclick="llClear('singly')">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getDoublyLLOperations() {
+            return getSinglyLLOperations().replace(/singly/g, 'doubly');
+        }
+
+        function getCircularLLOperations() {
+            return getSinglyLLOperations().replace(/singly/g, 'circular');
+        }
+
+        function getStackArrayOperations() {
+            return `
+                <div class="operations-section active">
+                    <h2>Stack (Array) Operations</h2>
+                    <div class="operation-group">
+                        <h3>Stack Operations</h3>
+                        <div class="input-group">
+                            <input type="number" id="stack-array-push-value" placeholder="Value">
+                            <button onclick="stackPush('array')">Push</button>
+                        </div>
+                        <div class="operation-buttons">
+                            <button class="operation-btn" onclick="stackPop('array')">Pop</button>
+                            <button class="operation-btn" onclick="stackPeek('array')">Peek</button>
+                            <button class="operation-btn" onclick="stackClear('array')">Clear</button>
+                        </div>
+                    </div>
+                    <div class="operation-group">
+                        <h3>Stack Applications</h3>
+                        <div class="input-group">
+                            <input type="text" id="stack-array-parentheses" placeholder="Expression (e.g., (a+b))">
+                            <button onclick="checkParentheses('array')">Check Parentheses</button>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="stack-array-reverse-str" placeholder="String to reverse">
+                            <button onclick="reverseString('array')">Reverse String</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getStackLLOperations() {
+            return getStackArrayOperations().replace(/array/g, 'linkedlist');
+        }
+
+        function getQueueOperations() {
+            return `
+                <div class="operations-section active">
+                    <h2>Queue Operations</h2>
+                    <div class="operation-group">
+                        <h3>Queue Operations</h3>
+                        <div class="input-group">
+                            <input type="number" id="queue-enqueue-value" placeholder="Value">
+                            <button onclick="queueEnqueue('normal')">Enqueue</button>
+                        </div>
+                        <div class="operation-buttons">
+                            <button class="operation-btn" onclick="queueDequeue('normal')">Dequeue</button>
+                            <button class="operation-btn" onclick="queueFront('normal')">Front</button>
+                            <button class="operation-btn" onclick="queueRear('normal')">Rear</button>
+                            <button class="operation-btn" onclick="queueClear('normal')">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getCircularQueueOperations() {
+            return getQueueOperations().replace(/normal/g, 'circular');
+        }
+
+        function getDequeOperations() {
+            return `
+                <div class="operations-section active">
+                    <h2>Deque Operations</h2>
+                    <div class="operation-group">
+                        <h3>Deque Operations</h3>
+                        <div class="input-group">
+                            <input type="number" id="deque-push-value" placeholder="Value">
+                            <button onclick="dequePushFront()">Push Front</button>
+                            <button onclick="dequePushRear()">Push Rear</button>
+                        </div>
+                        <div class="operation-buttons">
+                            <button class="operation-btn" onclick="dequePopFront()">Pop Front</button>
+                            <button class="operation-btn" onclick="dequePopRear()">Pop Rear</button>
+                            <button class="operation-btn" onclick="dequeFront()">Front</button>
+                            <button class="operation-btn" onclick="dequeRear()">Rear</button>
+                            <button class="operation-btn" onclick="dequeClear()">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getPriorityQueueOperations() {
+            return `
+                <div class="operations-section active">
+                    <h2>Priority Queue Operations</h2>
+                    <div class="operation-group">
+                        <h3>Priority Queue Operations</h3>
+                        <div class="input-group">
+                            <input type="number" id="priority-enqueue-value" placeholder="Value">
+                            <input type="number" id="priority-enqueue-priority" placeholder="Priority">
+                            <button onclick="priorityEnqueue()">Enqueue</button>
+                        </div>
+                        <div class="operation-buttons">
+                            <button class="operation-btn" onclick="priorityDequeue()">Dequeue</button>
+                            <button class="operation-btn" onclick="priorityPeek()">Peek</button>
+                            <button class="operation-btn" onclick="priorityClear()">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Message functions
+        function showMessage(text, isSuccess) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = 'message ' + (isSuccess ? 'success' : 'error');
+            setTimeout(() => hideMessage(), 3000);
+        }
+
+        function hideMessage() {
+            document.getElementById('message').className = 'message';
+        }
+
+        function clearDisplay() {
+            document.getElementById('ds-display').innerHTML = 
+                '<div class="empty-list">Select operations to see the data structure here</div>';
+        }
+
+        // Array Operations
+        async function arrayInsert() {
+            const value = document.getElementById('array-insert-value').value;
+            const position = document.getElementById('array-insert-position').value;
+            if (!value || position === '') {
+                showMessage('Please enter value and position', false);
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/api/array/insert`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ value: parseInt(value), position: parseInt(position) })
+                });
+                const data = await response.json();
+                showMessage(data.message, data.success);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function arrayDeletePosition() {
+            const position = document.getElementById('array-delete-position').value;
+            if (!position) {
+                showMessage('Please enter position', false);
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/api/array/delete/position/${position}`, { method: 'DELETE' });
+                const data = await response.json();
+                showMessage(data.message, data.success);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function arrayDeleteValue() {
+            const value = document.getElementById('array-delete-value').value;
+            if (!value) {
+                showMessage('Please enter value', false);
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/api/array/delete/value/${value}`, { method: 'DELETE' });
+                const data = await response.json();
+                showMessage(data.message, data.success);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function arrayLinearSearch() {
+            const value = document.getElementById('array-search-value').value;
+            if (!value) {
+                showMessage('Please enter value', false);
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/api/array/search/linear/${value}`);
+                const data = await response.json();
+                showMessage(data.found ? `Value found at position ${data.position}` : 'Value not found', data.found);
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function arrayBinarySearch() {
+            const value = document.getElementById('array-search-value').value;
+            if (!value) {
+                showMessage('Please enter value', false);
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/api/array/search/binary/${value}`);
+                const data = await response.json();
+                showMessage(data.found ? `Value found at position ${data.position}` : 'Value not found', data.found);
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function arrayTraverse() {
+            try {
+                const response = await fetch(`${API_BASE}/api/array/traverse`);
+                const data = await response.json();
+                showMessage(`Array has ${data.size} elements`, true);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function arrayUpdate() {
+            const position = document.getElementById('array-update-position').value;
+            const value = document.getElementById('array-update-value').value;
+            if (!position || !value) {
+                showMessage('Please enter position and value', false);
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/api/array/update`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ position: parseInt(position), value: parseInt(value) })
+                });
+                const data = await response.json();
+                showMessage(data.message, data.success);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function arrayClear() {
+            try {
+                const response = await fetch(`${API_BASE}/api/array/clear`, { method: 'DELETE' });
+                const data = await response.json();
+                showMessage(data.message, true);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        // Linked List Operations (reusing previous functions with modifications)
+        async function llInsert(type, location) {
+            let value, position;
+            if (location === 'beginning' || location === 'end') {
+                value = document.getElementById(`${type}-insert-value`).value;
+                if (!value) {
+                    showMessage('Please enter a value', false);
+                    return;
+                }
+            } else {
+                value = document.getElementById(`${type}-insert-position-value`).value;
+                position = document.getElementById(`${type}-insert-position`).value;
+                if (!value || !position) {
+                    showMessage('Please enter both value and position', false);
+                    return;
+                }
+            }
+
+            try {
+                let url = `${API_BASE}/api/${type}/insert/${location}`;
+                let body = { value: parseInt(value) };
+                if (location === 'position') {
+                    body.position = parseInt(position);
+                }
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                const data = await response.json();
+                showMessage(data.message || 'Operation successful', data.success !== false);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function llDelete(type, location) {
+            try {
+                let url;
+                if (location === 'beginning' || location === 'end') {
+                    url = `${API_BASE}/api/${type}/delete/${location}`;
+                } else if (location === 'position') {
+                    const position = document.getElementById(`${type}-delete-position`).value;
+                    if (!position) {
+                        showMessage('Please enter a position', false);
+                        return;
+                    }
+                    url = `${API_BASE}/api/${type}/delete/position/${position}`;
+                } else {
+                    const value = document.getElementById(`${type}-delete-value`).value;
+                    if (!value) {
+                        showMessage('Please enter a value', false);
+                        return;
+                    }
+                    url = `${API_BASE}/api/${type}/delete/value/${value}`;
+                }
+
+                const response = await fetch(url, { method: 'DELETE' });
+                const data = await response.json();
+                showMessage(data.message || 'Operation successful', data.success !== false);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function llUpdate(type) {
+            const oldValue = document.getElementById(`${type}-old-value`).value;
+            const newValue = document.getElementById(`${type}-new-value`).value;
+            if (!oldValue || !newValue) {
+                showMessage('Please enter both old and new values', false);
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/api/${type}/update`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ oldValue: parseInt(oldValue), newValue: parseInt(newValue) })
+                });
+                const data = await response.json();
+                showMessage(data.message || 'Operation successful', data.success !== false);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function llSearch(type) {
+            const value = document.getElementById(`${type}-search-value`).value;
+            if (!value) {
+                showMessage('Please enter a value to search', false);
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/api/${type}/search/${value}`);
+                const data = await response.json();
+                showMessage(data.found ? `Value ${value} found!` : `Value ${value} not found`, data.found);
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function llReverse(type) {
+            try {
+                const response = await fetch(`${API_BASE}/api/${type}/reverse`, { method: 'POST' });
+                const data = await response.json();
+                showMessage(data.message || 'List reversed', true);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function llClear(type) {
+            try {
+                const response = await fetch(`${API_BASE}/api/${type}/clear`, { method: 'DELETE' });
+                const data = await response.json();
+                showMessage(data.message || 'List cleared', true);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        // Stack Operations
+        async function stackPush(type) {
+            const value = document.getElementById(`stack-${type}-push-value`).value;
+            if (!value) {
+                showMessage('Please enter a value', false);
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/api/stack/${type}/push`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ value: parseInt(value) })
+                });
+                const data = await response.json();
+                showMessage(data.message || 'Pushed', data.success !== false);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function stackPop(type) {
+            try {
+                const response = await fetch(`${API_BASE}/api/stack/${type}/pop`, { method: 'POST' });
+                const data = await response.json();
+                showMessage(data.message || 'Popped', data.success !== false);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function stackPeek(type) {
+            try {
+                const response = await fetch(`${API_BASE}/api/stack/${type}/peek`);
+                const data = await response.json();
+                showMessage(data.hasValue ? `Top element: ${data.value}` : 'Stack is empty', data.hasValue);
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function stackClear(type) {
+            try {
+                const response = await fetch(`${API_BASE}/api/stack/${type}/clear`, { method: 'DELETE' });
+                const data = await response.json();
+                showMessage('Stack cleared', true);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function checkParentheses(type) {
+            const expression = document.getElementById(`stack-${type}-parentheses`).value;
+            if (!expression) {
+                showMessage('Please enter an expression', false);
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/api/stack/${type}/check-parentheses`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ expression: expression })
+                });
+                const data = await response.json();
+                showMessage(data.valid ? 'Parentheses are balanced!' : 'Parentheses are not balanced', data.valid);
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function reverseString(type) {
+            const str = document.getElementById(`stack-${type}-reverse-str`).value;
+            if (!str) {
+                showMessage('Please enter a string', false);
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/api/stack/${type}/reverse-string`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ str: str })
+                });
+                const data = await response.json();
+                showMessage(`Reversed: ${data.reversed}`, true);
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        // Queue Operations
+        async function queueEnqueue(type) {
+            const value = document.getElementById('queue-enqueue-value').value;
+            if (!value) {
+                showMessage('Please enter a value', false);
+                return;
+            }
+            try {
+                const apiPath = type === 'normal' ? 'queue' : `queue/${type}`;
+                const response = await fetch(`${API_BASE}/api/${apiPath}/enqueue`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ value: parseInt(value) })
+                });
+                const data = await response.json();
+                showMessage(data.message || 'Enqueued', data.success !== false);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function queueDequeue(type) {
+            try {
+                const apiPath = type === 'normal' ? 'queue' : `queue/${type}`;
+                const response = await fetch(`${API_BASE}/api/${apiPath}/dequeue`, { method: 'POST' });
+                const data = await response.json();
+                showMessage(data.message || 'Dequeued', data.success !== false);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function queueFront(type) {
+            try {
+                const apiPath = type === 'normal' ? 'queue' : `queue/${type}`;
+                const response = await fetch(`${API_BASE}/api/${apiPath}/front`);
+                const data = await response.json();
+                showMessage(data.hasValue ? `Front element: ${data.value}` : 'Queue is empty', data.hasValue);
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function queueRear(type) {
+            try {
+                const apiPath = type === 'normal' ? 'queue' : `queue/${type}`;
+                const response = await fetch(`${API_BASE}/api/${apiPath}/rear`);
+                const data = await response.json();
+                showMessage(data.hasValue ? `Rear element: ${data.value}` : 'Queue is empty', data.hasValue);
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function queueClear(type) {
+            try {
+                const apiPath = type === 'normal' ? 'queue' : `queue/${type}`;
+                const response = await fetch(`${API_BASE}/api/${apiPath}/clear`, { method: 'DELETE' });
+                const data = await response.json();
+                showMessage('Queue cleared', true);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        // Deque Operations
+        async function dequePushFront() {
+            const value = document.getElementById('deque-push-value').value;
+            if (!value) {
+                showMessage('Please enter a value', false);
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/api/deque/push/front`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ value: parseInt(value) })
+                });
+                const data = await response.json();
+                showMessage(data.message || 'Pushed at front', data.success !== false);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function dequePushRear() {
+            const value = document.getElementById('deque-push-value').value;
+            if (!value) {
+                showMessage('Please enter a value', false);
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/api/deque/push/rear`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ value: parseInt(value) })
+                });
+                const data = await response.json();
+                showMessage(data.message || 'Pushed at rear', data.success !== false);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function dequePopFront() {
+            try {
+                const response = await fetch(`${API_BASE}/api/deque/pop/front`, { method: 'POST' });
+                const data = await response.json();
+                showMessage(data.message || 'Popped from front', data.success !== false);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function dequePopRear() {
+            try {
+                const response = await fetch(`${API_BASE}/api/deque/pop/rear`, { method: 'POST' });
+                const data = await response.json();
+                showMessage(data.message || 'Popped from rear', data.success !== false);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function dequeFront() {
+            try {
+                const response = await fetch(`${API_BASE}/api/deque/front`);
+                const data = await response.json();
+                showMessage(data.hasValue ? `Front element: ${data.value}` : 'Deque is empty', data.hasValue);
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function dequeRear() {
+            try {
+                const response = await fetch(`${API_BASE}/api/deque/rear`);
+                const data = await response.json();
+                showMessage(data.hasValue ? `Rear element: ${data.value}` : 'Deque is empty', data.hasValue);
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function dequeClear() {
+            try {
+                const response = await fetch(`${API_BASE}/api/deque/clear`, { method: 'DELETE' });
+                const data = await response.json();
+                showMessage('Deque cleared', true);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        // Priority Queue Operations
+        async function priorityEnqueue() {
+            const value = document.getElementById('priority-enqueue-value').value;
+            const priority = document.getElementById('priority-enqueue-priority').value;
+            if (!value || !priority) {
+                showMessage('Please enter both value and priority', false);
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/api/queue/priority/enqueue`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ value: parseInt(value), priority: parseInt(priority) })
+                });
+                const data = await response.json();
+                showMessage(data.message || 'Enqueued', data.success !== false);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function priorityDequeue() {
+            try {
+                const response = await fetch(`${API_BASE}/api/queue/priority/dequeue`, { method: 'POST' });
+                const data = await response.json();
+                showMessage(data.message || 'Dequeued', data.success !== false);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function priorityPeek() {
+            try {
+                const response = await fetch(`${API_BASE}/api/queue/priority/peek`);
+                const data = await response.json();
+                showMessage(data.hasValue ? `Top element: ${data.value}` : 'Queue is empty', data.hasValue);
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        async function priorityClear() {
+            try {
+                const response = await fetch(`${API_BASE}/api/queue/priority/clear`, { method: 'DELETE' });
+                const data = await response.json();
+                showMessage('Priority queue cleared', true);
+                displayDS();
+            } catch (error) {
+                showMessage('Error: ' + error.message, false);
+            }
+        }
+
+        // Display Data Structure
+        async function displayDS() {
+            if (!currentDS) {
+                showMessage('Please select a data structure first', false);
+                return;
+            }
+
+            try {
+                let url;
+                if (currentDS === 'array') {
+                    url = `${API_BASE}/api/array/get`;
+                } else if (currentDS === 'linkedlist') {
+                    if (!currentType) {
+                        showMessage('Please select a linked list type', false);
+                        return;
+                    }
+                    url = `${API_BASE}/api/${currentType}/get`;
+                } else if (currentDS === 'stack') {
+                    if (!currentType) {
+                        showMessage('Please select a stack type', false);
+                        return;
+                    }
+                    url = `${API_BASE}/api/stack/${currentType}/get`;
+                } else if (currentDS === 'queue') {
+                    if (!currentType) {
+                        showMessage('Please select a queue type', false);
+                        return;
+                    }
+                    if (currentType === 'normal') {
+                        url = `${API_BASE}/api/queue/get`;
+                    } else if (currentType === 'circular') {
+                        url = `${API_BASE}/api/queue/circular/get`;
+                    } else if (currentType === 'deque') {
+                        url = `${API_BASE}/api/deque/get`;
+                    } else if (currentType === 'priority') {
+                        url = `${API_BASE}/api/queue/priority/get`;
+                    }
+                }
+
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                const displayDiv = document.getElementById('ds-display');
+                
+                if (!data || 
+                    (data.values && data.values.length === 0) || 
+                    (data.items && data.items.length === 0) ||
+                    (data.data && data.data.length === 0) ||
+                    (data.size === 0)) {
+                    displayDiv.innerHTML = '<div class="empty-list">Data structure is empty</div>';
+                    return;
+                }
+
+                let html = '';
+                
+                if (currentDS === 'array') {
+                    const values = data.values || [];
+                    values.forEach((val, i) => {
+                        html += `<div class="array-item">[${i}] ${val}</div>`;
+                        if (i < values.length - 1) html += ' ';
+                    });
+                } else if (currentDS === 'linkedlist') {
+                    const values = data.values || [];
+                    for (let i = 0; i < values.length; i++) {
+                        html += `<div class="node">${values[i]}</div>`;
+                        if (i < values.length - 1) {
+                            html += '<span class="arrow">→</span>';
+                        } else if (currentType === 'circular' && values.length > 0) {
+                            html += '<span class="arrow">→</span>';
+                            html += '<div class="node" style="background: #28a745;">Head</div>';
+                        }
+                    }
+                } else if (currentDS === 'stack') {
+                    const values = data.values || [];
+                    for (let i = values.length - 1; i >= 0; i--) {
+                        html += `<div class="stack-item">${values[i]}</div>`;
+                        if (i > 0) html += '<br>';
+                    }
+                    if (values.length > 0) {
+                        html = '<div style="text-align: center;"><div style="font-weight: bold; margin-bottom: 10px;">Top ↓</div>' + html + '</div>';
+                    }
+                } else if (currentDS === 'queue') {
+                    if (currentType === 'priority') {
+                        const dataValues = data.data || [];
+                        const priorities = data.priorities || [];
+                        for (let i = 0; i < dataValues.length; i++) {
+                            html += `<div class="priority-item">
+                                <div class="priority-value">${dataValues[i]}</div>
+                                <div class="priority-priority">Priority: ${priorities[i]}</div>
+                            </div>`;
+                        }
+                    } else {
+                        const values = data.values || [];
+                        values.forEach((val, i) => {
+                            html += `<div class="queue-item">${val}</div>`;
+                            if (i < values.length - 1) {
+                                html += '<span class="arrow">→</span>';
+                            }
+                        });
+                        if (values.length > 0) {
+                            html = '<div style="display: flex; align-items: center; gap: 10px;"><span style="font-weight: bold;">Front →</span>' + html + '<span style="font-weight: bold;">← Rear</span></div>';
+                        }
+                    }
+                }
+
+                displayDiv.innerHTML = html;
+            } catch (error) {
+                showMessage('Error displaying: ' + error.message, false);
+            }
+        }
+    </script>
+</body>
+</html>

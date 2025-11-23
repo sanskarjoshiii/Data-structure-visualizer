@@ -1,0 +1,13 @@
+build/
+*.exe
+*.o
+*.obj
+.git/
+.gitignore
+.vscode/
+.idea/
+*.log
+*.tmp
+CMakeFiles/
+CMakeCache.txt
+
