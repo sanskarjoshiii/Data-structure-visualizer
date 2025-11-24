@@ -4,7 +4,7 @@ An interactive Data Structures and Algorithms visualizer built with C++, HTML, C
 
 ## 🌐 Live Demo
 
-Visit the live website: [-https://sanskarjoshiii.github.io/Data-structure-visualizer/ ](-https://sanskarjoshiii.github.io/Data-structure-visualizer/ )
+Visit the live website: [https://sanskarjoshiii.github.io/Data-structure-visualizer/ ](https://sanskarjoshiii.github.io/Data-structure-visualizer/ )
 
 ## 📥 Download
 
