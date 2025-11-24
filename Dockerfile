@@ -31,3 +31,4 @@ EXPOSE 18080
 # Run the application
 CMD ["./dsa_visualizer"]
 
+

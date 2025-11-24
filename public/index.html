@@ -332,6 +332,16 @@
         let currentDS = null;
         let currentType = null;
 
+        // Small helper to let displayDS know what kind of change happened.
+        // Operation functions set this before calling displayDS().
+        let lastAction = null; // 'add' | 'remove' | 'update' | null
+        let _lastActionTimer = null;
+        function setLastAction(action){
+            lastAction = action;
+            if(_lastActionTimer) clearTimeout(_lastActionTimer);
+            _lastActionTimer = setTimeout(()=>{ lastAction = null; _lastActionTimer = null }, 1200);
+        }
+
         function selectDS(ds) {
             currentDS = ds;
             currentType = null;
@@ -636,6 +646,7 @@
 
         // Array Operations
         async function arrayInsert() {
+            setLastAction('add');
             const value = document.getElementById('array-insert-value').value;
             const position = document.getElementById('array-insert-position').value;
             if (!value || position === '') {
@@ -657,6 +668,7 @@
         }
 
         async function arrayDeletePosition() {
+            setLastAction('remove');
             const position = document.getElementById('array-delete-position').value;
             if (!position) {
                 showMessage('Please enter position', false);
@@ -673,6 +685,7 @@
         }
 
         async function arrayDeleteValue() {
+            setLastAction('remove');
             const value = document.getElementById('array-delete-value').value;
             if (!value) {
                 showMessage('Please enter value', false);
@@ -730,6 +743,7 @@
         }
 
         async function arrayUpdate() {
+            setLastAction('update');
             const position = document.getElementById('array-update-position').value;
             const value = document.getElementById('array-update-value').value;
             if (!position || !value) {
@@ -751,6 +765,7 @@
         }
 
         async function arrayClear() {
+            setLastAction('remove');
             try {
                 const response = await fetch(`${API_BASE}/api/array/clear`, { method: 'DELETE' });
                 const data = await response.json();
@@ -763,6 +778,7 @@
 
         // Linked List Operations (reusing previous functions with modifications)
         async function llInsert(type, location) {
+            setLastAction('add');
             let value, position;
             if (location === 'beginning' || location === 'end') {
                 value = document.getElementById(`${type}-insert-value`).value;
@@ -801,6 +817,7 @@
         }
 
         async function llDelete(type, location) {
+            setLastAction('remove');
             try {
                 let url;
                 if (location === 'beginning' || location === 'end') {
@@ -831,6 +848,7 @@
         }
 
         async function llUpdate(type) {
+            setLastAction('update');
             const oldValue = document.getElementById(`${type}-old-value`).value;
             const newValue = document.getElementById(`${type}-new-value`).value;
             if (!oldValue || !newValue) {
@@ -878,6 +896,7 @@
         }
 
         async function llClear(type) {
+            setLastAction('remove');
             try {
                 const response = await fetch(`${API_BASE}/api/${type}/clear`, { method: 'DELETE' });
                 const data = await response.json();
@@ -890,6 +909,7 @@
 
         // Stack Operations
         async function stackPush(type) {
+            setLastAction('add');
             const value = document.getElementById(`stack-${type}-push-value`).value;
             if (!value) {
                 showMessage('Please enter a value', false);
@@ -910,6 +930,7 @@
         }
 
         async function stackPop(type) {
+            setLastAction('remove');
             try {
                 const response = await fetch(`${API_BASE}/api/stack/${type}/pop`, { method: 'POST' });
                 const data = await response.json();
@@ -931,6 +952,7 @@
         }
 
         async function stackClear(type) {
+            setLastAction('remove');
             try {
                 const response = await fetch(`${API_BASE}/api/stack/${type}/clear`, { method: 'DELETE' });
                 const data = await response.json();
@@ -981,6 +1003,7 @@
 
         // Queue Operations
         async function queueEnqueue(type) {
+            setLastAction('add');
             const value = document.getElementById('queue-enqueue-value').value;
             if (!value) {
                 showMessage('Please enter a value', false);
@@ -1002,6 +1025,7 @@
         }
 
         async function queueDequeue(type) {
+            setLastAction('remove');
             try {
                 const apiPath = type === 'normal' ? 'queue' : `queue/${type}`;
                 const response = await fetch(`${API_BASE}/api/${apiPath}/dequeue`, { method: 'POST' });
@@ -1036,6 +1060,7 @@
         }
 
         async function queueClear(type) {
+            setLastAction('remove');
             try {
                 const apiPath = type === 'normal' ? 'queue' : `queue/${type}`;
                 const response = await fetch(`${API_BASE}/api/${apiPath}/clear`, { method: 'DELETE' });
@@ -1049,6 +1074,7 @@
 
         // Deque Operations
         async function dequePushFront() {
+            setLastAction('add');
             const value = document.getElementById('deque-push-value').value;
             if (!value) {
                 showMessage('Please enter a value', false);
@@ -1069,6 +1095,7 @@
         }
 
         async function dequePushRear() {
+            setLastAction('add');
             const value = document.getElementById('deque-push-value').value;
             if (!value) {
                 showMessage('Please enter a value', false);
@@ -1089,6 +1116,7 @@
         }
 
         async function dequePopFront() {
+            setLastAction('remove');
             try {
                 const response = await fetch(`${API_BASE}/api/deque/pop/front`, { method: 'POST' });
                 const data = await response.json();
@@ -1100,6 +1128,7 @@
         }
 
         async function dequePopRear() {
+            setLastAction('remove');
             try {
                 const response = await fetch(`${API_BASE}/api/deque/pop/rear`, { method: 'POST' });
                 const data = await response.json();
@@ -1131,6 +1160,7 @@
         }
 
         async function dequeClear() {
+            setLastAction('remove');
             try {
                 const response = await fetch(`${API_BASE}/api/deque/clear`, { method: 'DELETE' });
                 const data = await response.json();
@@ -1143,6 +1173,7 @@
 
         // Priority Queue Operations
         async function priorityEnqueue() {
+            setLastAction('add');
             const value = document.getElementById('priority-enqueue-value').value;
             const priority = document.getElementById('priority-enqueue-priority').value;
             if (!value || !priority) {
@@ -1164,6 +1195,7 @@
         }
 
         async function priorityDequeue() {
+            setLastAction('remove');
             try {
                 const response = await fetch(`${API_BASE}/api/queue/priority/dequeue`, { method: 'POST' });
                 const data = await response.json();
@@ -1185,6 +1217,7 @@
         }
 
         async function priorityClear() {
+            setLastAction('remove');
             try {
                 const response = await fetch(`${API_BASE}/api/queue/priority/clear`, { method: 'DELETE' });
                 const data = await response.json();
@@ -1301,6 +1334,33 @@
                 }
 
                 displayDiv.innerHTML = html;
+
+                // Apply animation classes based on the last action performed.
+                if (lastAction) {
+                    const children = Array.from(displayDiv.children);
+                    // stagger animations for nicer effect
+                    children.forEach((el, idx) => {
+                        el.classList.remove('animate-add', 'animate-update', 'animate-remove');
+                        const delay = idx * 60; // ms
+                        if (lastAction === 'add') {
+                            el.style.animationDelay = delay + 'ms';
+                            el.classList.add('animate-add');
+                        } else if (lastAction === 'update') {
+                            el.style.animationDelay = delay + 'ms';
+                            el.classList.add('animate-update');
+                        } else if (lastAction === 'remove') {
+                            el.style.animationDelay = delay + 'ms';
+                            el.classList.add('animate-remove');
+                        }
+                        // clear inline delay after animation ends
+                        el.addEventListener('animationend', () => { el.style.animationDelay = '' }, { once: true });
+                    });
+                    // clear lastAction after animations
+                    if (_lastActionTimer) {
+                        clearTimeout(_lastActionTimer);
+                        _lastActionTimer = setTimeout(()=>{ lastAction = null; _lastActionTimer = null }, 1000 + children.length * 60);
+                    }
+                }
             } catch (error) {
                 showMessage('Error displaying: ' + error.message, false);
             }
